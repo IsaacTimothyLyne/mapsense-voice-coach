@@ -1,0 +1,113 @@
+<!-- MapSense Controls -->
+<style>
+  .ms-card{font:14px/1.3 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    border:1px solid #e3e3e6; border-radius:12px; padding:12px; margin:10px 0;
+    background:#fafafb}
+  .ms-row{display:flex; gap:16px; align-items:center; flex-wrap:wrap}
+  .ms-row + .ms-row{margin-top:8px}
+  .ms-switch{display:flex; gap:12px; align-items:center}
+  .ms-sep{height:1px; background:#eaeaf0; margin:10px 0}
+  .ms-badge{font-size:12px; padding:2px 8px; border-radius:999px; background:#eef3ff; color:#2b4bff}
+  .ms-btn{padding:6px 10px; border:1px solid #d7d7dd; border-radius:8px; background:#fff; cursor:pointer}
+  .ms-btn:active{transform:translateY(1px)}
+  .ms-inline{display:inline-flex; align-items:center; gap:8px}
+  .ms-small{font-size:12px; color:#666}
+  .ms-right{margin-left:auto}
+  .ms-hint{color:#888; font-size:12px}
+  .ms-slider{width:180px}
+</style>
+
+<div class="ms-card" role="group" aria-label="MapSense Controls">
+  <div class="ms-row">
+    <strong>MapSense Voice Coach</strong>
+    <span id="ms_status" class="ms-badge" title="Status">Idle</span>
+    <div class="ms-right ms-hint">Tip: press <kbd>T</kbd> to speak a test line</div>
+  </div>
+
+  <div class="ms-sep"></div>
+
+  <div class="ms-row">
+    <label class="ms-inline" title="Master enable/disable speech">
+      <input type="checkbox" id="opt_master" checked>
+      <span>Enable voice</span>
+    </label>
+
+    <label class="ms-inline" title="Announcements for kills, deaths, assists, respawns">
+      <input type="checkbox" id="opt_kills" checked>
+      <span>Speak kills/deaths</span>
+    </label>
+
+    <label class="ms-inline" title="Announcements for dragon/baron timers & takes">
+      <input type="checkbox" id="opt_objectives" checked>
+      <span>Speak objectives</span>
+    </label>
+
+    <label class="ms-inline" title="Announcements when enemies go missing / return">
+      <input type="checkbox" id="opt_mia" checked>
+      <span>Speak MIA/back</span>
+    </label>
+  </div>
+
+  <div class="ms-row">
+    <div class="ms-inline" title="Speech speed">
+      <span>Rate</span>
+      <input type="range" id="opt_rate" class="ms-slider" min="0.8" max="1.6" step="0.05" value="1.1">
+      <span id="opt_rate_val" class="ms-small">1.1×</span>
+    </div>
+
+    <div class="ms-inline">
+      <button id="btn_mute" class="ms-btn" title="Mute all speech">Mute</button>
+      <button id="btn_unmute" class="ms-btn" title="Unmute speech">Unmute</button>
+    </div>
+
+    <div class="ms-right">
+      <button id="btn_test_voice" class="ms-btn" title="Speak a sample line">Speak test</button>
+    </div>
+  </div>
+
+  <div class="ms-sep"></div>
+
+  <div class="ms-row">
+    <strong>Objective timers (manual test)</strong>
+    <span class="ms-hint">These work even without GEP so you can validate timing.</span>
+  </div>
+
+  <div class="ms-row">
+    <button id="btn_start_drake" class="ms-btn" title="Start a 5:00 dragon countdown">Start Dragon (5:00)</button>
+    <button id="btn_start_baron" class="ms-btn" title="Start a 20:00 baron countdown">Start Baron (20:00)</button>
+    <button id="btn_clear_timers" class="ms-btn" title="Stop all objective reminders">Clear timers</button>
+  </div>
+</div>
+
+<!-- Put this AFTER the controls markup, BEFORE renderer.js -->
+<script>
+  (function () {
+    // Show live rate value
+    var rate = document.getElementById('opt_rate');
+    var rateVal = document.getElementById('opt_rate_val');
+    if (rate && rateVal) {
+      rate.addEventListener('input', function () {
+        rateVal.textContent = (+rate.value).toFixed(2) + '×';
+      });
+    }
+
+    // Master toggle ties to mute/unmute buttons
+    var master = document.getElementById('opt_master');
+    var muteBtn = document.getElementById('btn_mute');
+    var unmuteBtn = document.getElementById('btn_unmute');
+    if (master && muteBtn && unmuteBtn) {
+      master.addEventListener('change', function () {
+        if (master.checked) unmuteBtn.click(); else muteBtn.click();
+      });
+    }
+
+    // Keyboard shortcut: T = Speak test
+    document.addEventListener('keydown', function (ev) {
+      if (!ev.key) return;
+      if (ev.key.toLowerCase() === 't') {
+        var testBtn = document.getElementById('btn_test_voice');
+        if (testBtn) testBtn.click();
+      }
+    });
+  })();
+</script>
