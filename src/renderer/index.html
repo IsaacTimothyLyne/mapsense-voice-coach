@@ -1,19 +1,19 @@
 <!-- MapSense Controls -->
 <style>
-  .ms-card{font:14px/1.3 system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    border:1px solid #e3e3e6; border-radius:12px; padding:12px; margin:10px 0;
-    background:#fafafb}
-  .ms-row{display:flex; gap:16px; align-items:center; flex-wrap:wrap}
+  body{margin:0;padding:20px;font:14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(135deg,#f5f7fa,#e4e7eb)}
+  .ms-card{border:1px solid #e3e3e6;border-radius:12px;padding:12px;margin:10px 0;background:#fafafb;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+  .ms-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
   .ms-row + .ms-row{margin-top:8px}
-  .ms-switch{display:flex; gap:12px; align-items:center}
-  .ms-sep{height:1px; background:#eaeaf0; margin:10px 0}
-  .ms-badge{font-size:12px; padding:2px 8px; border-radius:999px; background:#eef3ff; color:#2b4bff}
-  .ms-btn{padding:6px 10px; border:1px solid #d7d7dd; border-radius:8px; background:#fff; cursor:pointer}
+  .ms-switch{display:flex;gap:12px;align-items:center}
+  .ms-sep{height:1px;background:#eaeaf0;margin:10px 0}
+  .ms-badge{font-size:12px;padding:2px 8px;border-radius:999px;background:#eef3ff;color:#2b4bff}
+  .ms-btn{padding:6px 10px;border:1px solid #d7d7dd;border-radius:8px;background:linear-gradient(#fff,#f0f0f0);cursor:pointer;transition:background .2s}
+  .ms-btn:hover{background:#f6f6f6}
   .ms-btn:active{transform:translateY(1px)}
-  .ms-inline{display:inline-flex; align-items:center; gap:8px}
-  .ms-small{font-size:12px; color:#666}
+  .ms-inline{display:inline-flex;align-items:center;gap:8px}
+  .ms-small{font-size:12px;color:#666}
   .ms-right{margin-left:auto}
-  .ms-hint{color:#888; font-size:12px}
+  .ms-hint{color:#888;font-size:12px}
   .ms-slider{width:180px}
 </style>
 
@@ -77,37 +77,6 @@
     <button id="btn_start_baron" class="ms-btn" title="Start a 20:00 baron countdown">Start Baron (20:00)</button>
     <button id="btn_clear_timers" class="ms-btn" title="Stop all objective reminders">Clear timers</button>
   </div>
-</div>
+  </div>
 
-<!-- Put this AFTER the controls markup, BEFORE renderer.js -->
-<script>
-  (function () {
-    // Show live rate value
-    var rate = document.getElementById('opt_rate');
-    var rateVal = document.getElementById('opt_rate_val');
-    if (rate && rateVal) {
-      rate.addEventListener('input', function () {
-        rateVal.textContent = (+rate.value).toFixed(2) + '×';
-      });
-    }
-
-    // Master toggle ties to mute/unmute buttons
-    var master = document.getElementById('opt_master');
-    var muteBtn = document.getElementById('btn_mute');
-    var unmuteBtn = document.getElementById('btn_unmute');
-    if (master && muteBtn && unmuteBtn) {
-      master.addEventListener('change', function () {
-        if (master.checked) unmuteBtn.click(); else muteBtn.click();
-      });
-    }
-
-    // Keyboard shortcut: T = Speak test
-    document.addEventListener('keydown', function (ev) {
-      if (!ev.key) return;
-      if (ev.key.toLowerCase() === 't') {
-        var testBtn = document.getElementById('btn_test_voice');
-        if (testBtn) testBtn.click();
-      }
-    });
-  })();
-</script>
+  <script defer src="renderer.js"></script>

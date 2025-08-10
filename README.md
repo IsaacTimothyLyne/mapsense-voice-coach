@@ -60,3 +60,7 @@ In order to add more/remove certain ow-electron "packages" from the project, sim
   ...
 }
 ```
+
+## Voice coach quick test
+
+Build the renderer with `npm run build:renderer`, then load `dist/renderer/index.html` in an Overwolf window. Click **Speak test** (or press **T**) to hear the sample line and verify audio output. The **Enable voice** checkbox mirrors the master mute state so you can toggle speech on or off.
