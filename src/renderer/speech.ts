@@ -21,9 +21,25 @@ export function createSpeechQueue(getRate: RateGetter, isMuted: MutedGetter) {
     const text = q.shift()!;
     const u = new SpeechSynthesisUtterance(text);
     u.rate = getRate();
-    u.onstart = () => console.log('[TTS] start:', text);
-    u.onerror = (e) => { console.warn('[TTS] error:', e); speaking = false; pump(); };
-    u.onend = () => { console.log('[TTS] end'); speaking = false; pump(); };
+    u.onstart = () => {
+      console.log('[TTS] start:', text);
+      errorCount = 0; // reset error count on successful start
+    };
+    u.onerror = (e) => {
+      console.warn('[TTS] error:', e);
+      speaking = false;
+      errorCount++;
+      if (errorCount >= MAX_ERRORS) {
+        console.error('[TTS] Too many consecutive errors, aborting speech queue.');
+        return;
+      }
+      setTimeout(() => pump(), ERROR_RETRY_DELAY_MS);
+    };
+    u.onend = () => {
+      console.log('[TTS] end');
+      speaking = false;
+      pump();
+    };
     try { window.speechSynthesis.speak(u); }
     catch (e) { console.warn('[TTS] speak threw', e); speaking = false; pump(); }
   }
