@@ -1,3 +1,4 @@
+import { createSpeechQueue, warmVoices } from './speech';
 console.log('renderer script');
 
 // ================= STATUS BADGE =================
@@ -22,26 +23,11 @@ const load = (): Settings => ({ ...DEFAULTS, ...JSON.parse(localStorage.getItem(
 const save = (s: Settings) => localStorage.setItem('mapsense_settings', JSON.stringify(s));
 let S = load();
 
-let speaking = false;
-const q: string[] = [];
 function setRate(rate:number){ S.rate = rate; save(S); }
-function enqueue(text: string) {
-  console.log('[enqueue]', text, '| muted=', S.muted);
-  if (S.muted) return;
-  q.push(text);
-  pump();
-}
-function pump() {
-  if (speaking || q.length === 0) return;
-  speaking = true;
-  const text = q.shift()!;
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = S.rate;
-  u.onstart = () => console.log('[TTS] start:', text);
-  u.onerror = (e) => console.warn('[TTS] error:', e);
-  u.onend = () => { console.log('[TTS] end'); speaking = false; pump(); };
-  try { speechSynthesis.speak(u); } catch (e) { console.warn('[TTS] speak threw', e); speaking = false; }
-}
+// Speech queue lives in its own module to keep renderer.ts lean
+const { enqueue } = createSpeechQueue(() => S.rate, () => S.muted);
+// Warm voices on first user interaction – some platforms ignore the first call otherwise
+document.addEventListener('click', warmVoices, { once: true });
 
 // --- COOLDOWNS ---
 const cd = new Map<string, number>();
@@ -169,7 +155,14 @@ function initPanel() {
 
   // Speak test – robust binding + global fallback
   const test = document.getElementById('btn_test_voice') as HTMLButtonElement | null;
-  const speakTest = () => { console.log('[UI] Speak test'); enqueue('MapSense ready'); };
+  const speakTest = () => {
+    console.log('[UI] Speak test');
+    if (!voicesWarmed) {
+      warmVoices();
+      voicesWarmed = true;
+    }
+    enqueue('MapSense ready');
+  };
   test?.addEventListener('click', speakTest);
   (window as any).mapsenseSpeakTest = speakTest; // fallback if you want onclick="mapsenseSpeakTest()"
 
