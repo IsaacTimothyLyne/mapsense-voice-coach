@@ -77,37 +77,4 @@
     <button id="btn_start_baron" class="ms-btn" title="Start a 20:00 baron countdown">Start Baron (20:00)</button>
     <button id="btn_clear_timers" class="ms-btn" title="Stop all objective reminders">Clear timers</button>
   </div>
-</div>
-
-<!-- Put this AFTER the controls markup, BEFORE renderer.js -->
-<script>
-  (function () {
-    // Show live rate value
-    var rate = document.getElementById('opt_rate');
-    var rateVal = document.getElementById('opt_rate_val');
-    if (rate && rateVal) {
-      rate.addEventListener('input', function () {
-        rateVal.textContent = (+rate.value).toFixed(2) + '×';
-      });
-    }
-
-    // Master toggle ties to mute/unmute buttons
-    var master = document.getElementById('opt_master');
-    var muteBtn = document.getElementById('btn_mute');
-    var unmuteBtn = document.getElementById('btn_unmute');
-    if (master && muteBtn && unmuteBtn) {
-      master.addEventListener('change', function () {
-        if (master.checked) unmuteBtn.click(); else muteBtn.click();
-      });
-    }
-
-    // Keyboard shortcut: T = Speak test
-    document.addEventListener('keydown', function (ev) {
-      if (!ev.key) return;
-      if (ev.key.toLowerCase() === 't') {
-        var testBtn = document.getElementById('btn_test_voice');
-        if (testBtn) testBtn.click();
-      }
-    });
-  })();
-</script>
+  </div>

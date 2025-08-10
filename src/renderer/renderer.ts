@@ -147,16 +147,25 @@ function initPanel() {
   const k = document.getElementById('opt_kills') as HTMLInputElement | null; if (k) k.checked = S.speakKills;
   const o = document.getElementById('opt_objectives') as HTMLInputElement | null; if (o) o.checked = S.speakObjectives;
   const m = document.getElementById('opt_mia') as HTMLInputElement | null; if (m) m.checked = S.speakMIA;
+  const master = document.getElementById('opt_master') as HTMLInputElement | null; if (master) master.checked = !S.muted;
   const rateEl = document.getElementById('opt_rate') as HTMLInputElement | null; if (rateEl) rateEl.value = String(S.rate);
+  const rateVal = document.getElementById('opt_rate_val') as HTMLElement | null; if (rateVal) rateVal.textContent = S.rate.toFixed(2) + '×';
 
   // Bind controls
   k?.addEventListener('change', e => { S.speakKills = (e.target as HTMLInputElement).checked; save(S); });
   o?.addEventListener('change', e => { S.speakObjectives = (e.target as HTMLInputElement).checked; save(S); });
   m?.addEventListener('change', e => { S.speakMIA = (e.target as HTMLInputElement).checked; save(S); });
-  rateEl?.addEventListener('input', e => setRate(parseFloat((e.target as HTMLInputElement).value)));
+  rateEl?.addEventListener('input', e => {
+    const val = parseFloat((e.target as HTMLInputElement).value);
+    setRate(val);
+    if (rateVal) rateVal.textContent = val.toFixed(2) + '×';
+  });
 
-  const mute = document.getElementById('btn_mute');     mute?.addEventListener('click', () => { S.muted = true;  save(S); setStatus('Muted', 'warn'); });
-  const unmute = document.getElementById('btn_unmute'); unmute?.addEventListener('click', () => { S.muted = false; save(S); setStatus('Unmuted', 'ok'); });
+  const doMute = () => { S.muted = true; save(S); master && (master.checked = false); setStatus('Muted', 'warn'); };
+  const doUnmute = () => { S.muted = false; save(S); master && (master.checked = true); setStatus('Unmuted', 'ok'); };
+  const mute = document.getElementById('btn_mute');     mute?.addEventListener('click', doMute);
+  const unmute = document.getElementById('btn_unmute'); unmute?.addEventListener('click', doUnmute);
+  master?.addEventListener('change', e => { (e.target as HTMLInputElement).checked ? doUnmute() : doMute(); });
 
   // Speak test – robust binding + global fallback
   const test = document.getElementById('btn_test_voice') as HTMLButtonElement | null;
