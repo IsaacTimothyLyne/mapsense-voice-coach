@@ -155,7 +155,14 @@ function initPanel() {
 
   // Speak test – robust binding + global fallback
   const test = document.getElementById('btn_test_voice') as HTMLButtonElement | null;
-  const speakTest = () => { console.log('[UI] Speak test'); warmVoices(); enqueue('MapSense ready'); };
+  const speakTest = () => {
+    console.log('[UI] Speak test');
+    if (!voicesWarmed) {
+      warmVoices();
+      voicesWarmed = true;
+    }
+    enqueue('MapSense ready');
+  };
   test?.addEventListener('click', speakTest);
   (window as any).mapsenseSpeakTest = speakTest; // fallback if you want onclick="mapsenseSpeakTest()"
 
