@@ -25,7 +25,7 @@ export function createSpeechQueue(getRate: RateGetter, isMuted: MutedGetter) {
     u.onerror = (e) => { console.warn('[TTS] error:', e); speaking = false; pump(); };
     u.onend = () => { console.log('[TTS] end'); speaking = false; pump(); };
     try { window.speechSynthesis.speak(u); }
-    catch (e) { console.warn('[TTS] speak threw', e); speaking = false; }
+    catch (e) { console.warn('[TTS] speak threw', e); speaking = false; pump(); }
   }
 
   function enqueue(text: string): void {
